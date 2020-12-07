@@ -26,6 +26,7 @@ public class UserList {
         this.context = context.getApplicationContext();
         database = new UserBaseHelper(context).getWritableDatabase();
     }
+    //получаем список юзеров из базы данных
     public List getUsers(){
         users = new ArrayList();
         UserCursorWrapper cursor = queryUsers(null,null);
@@ -74,7 +75,10 @@ public class UserList {
                 new String[]{uuidString});
     }
 
-    public void deleteUser(){
+    public void deleteUser(User user){
         // Удаляем пользователя
+        String uuidString = user.getUuid().toString();
+        database.delete(UserDbSchema.UserTable.NAME,UserDbSchema.UserTable.Cols.UUID+"=?",
+                new String[]{uuidString});
     }
 }

@@ -3,6 +3,8 @@ package com.romandurran.userlist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,8 +31,13 @@ public class UserListFragment extends Fragment {
         userRecyclerView.setAdapter(userAdapter);
         openAddUserActivity.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getContext(), AddUser.class));
+            public void onClick(View view) {//переходим в фрагмент для добавления юзера
+                FragmentActivity activity = (FragmentActivity) view.getContext();
+                // Создаём менеджер фрагментов
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                // создаём фрагмент
+                Fragment fragment = new AddUserFragment();
+                fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment,"add_user_fragment").addToBackStack("add_user_fragment").commit();
 
             }
         });
@@ -54,6 +61,7 @@ public class UserListFragment extends Fragment {
         }
 
         @Override
+
         public void onClick(View view) {
             MainActivity.changeFragment(view, itemUser);
         }
@@ -67,11 +75,12 @@ public class UserListFragment extends Fragment {
         }
 
         @Override
+        //создаем один элемент списка RecyclerView
         public UserHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             return new UserHolder(inflater,viewGroup);
         }
-
+//связываем наш элемент с элементом из списка юзеров
         @Override
         public void onBindViewHolder(UserHolder userHolder, int position) {
             User user = users.get(position);

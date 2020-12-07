@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment,"main_fragment").commit();
     }
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { // возвращаемся назад из UserFragment по нажатию кнопки "назад", если уже в UserListFragment, то выходим из приложения
         Fragment currentFragment = fragmentManager.findFragmentByTag("main_fragment");
         if (currentFragment != null && currentFragment.isVisible()){
             super.onBackPressed();
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment, "main_fragment").commit();
         }
     }
-    public static void changeFragment(View view,User user){
+    public static void changeFragment(View view,User user){ //получаем более подробную информацию по юзеру при нажатии на него в UserListFragment
         // Получаем хостинговую активность (в нашем случае MainActivity)
         FragmentActivity activity = (FragmentActivity) view.getContext();
         // Создаём менеджер фрагментов

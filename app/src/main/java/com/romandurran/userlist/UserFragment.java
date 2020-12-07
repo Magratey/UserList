@@ -2,6 +2,8 @@ package com.romandurran.userlist;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ public class UserFragment extends Fragment {
     private EditText editName;
     private EditText editLastname;
     private Button updateBtn;
+    private Button delUserBtn;
     private UserList userList;
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -24,6 +27,7 @@ public class UserFragment extends Fragment {
         user = (User) bundle.getSerializable("user"); // Принимаем объект user
     }
     @Override
+    //создаем вьюшку с полными данными нашего юзера
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_user,container,false);
         userList = UserList.get(getActivity());
@@ -31,20 +35,44 @@ public class UserFragment extends Fragment {
         editName = view.findViewById(R.id.editName);
         editLastname = view.findViewById(R.id.editLastname);
         updateBtn = view.findViewById(R.id.updateBtn);
+        delUserBtn = view.findViewById(R.id.delUserBtn);
         final String userName = "Имя: "+user.getUserName()+"\n"+"Фамилия: "+user.getUserLastName();
         userName_userLastname_View.setText(userName);
 
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
+            //изменяем имя и фамилию юзера
             public void onClick(View view) {
                 String newUserName = editName.getText().toString();
                 String newUserLastname = editLastname.getText().toString();
                 user.setUserName(newUserName);
                 user.setUserLastName(newUserLastname);
                 userList.updateUser(user);
-                Toast.makeText(getActivity(),"Данные изменены",Toast.LENGTH_SHORT).show();
+                FragmentActivity activity = (FragmentActivity) view.getContext();
+                // Создаём менеджер фрагментов
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                // создаём фрагмент
+                Fragment fragment = new UserListFragment();
+                fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
             }
         });
+
+        delUserBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            //удаляем юзера
+            public void onClick(View v) {
+
+                userList.deleteUser(user);
+
+                FragmentActivity activity = (FragmentActivity) view.getContext();
+                // Создаём менеджер фрагментов
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                // создаём фрагмент
+                Fragment fragment = new UserListFragment();
+                fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+            }
+        });
+
         return view;
     }
 }
